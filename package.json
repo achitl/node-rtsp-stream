@@ -9,7 +9,6 @@
   },
   "author": "Antoine Choquet <achoquet@itlink.fr>",
   "dependencies": {
-    "fs": "0.0.1-security",
     "https": "^1.0.0",
     "ws": "^7.1.2"
   }

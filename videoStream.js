@@ -1,5 +1,4 @@
 var ws = require('ws');
-var fs = require('fs');
 var util = require('util');
 var https = require('https');
 var events = require('events');
@@ -119,10 +118,9 @@ VideoStream.prototype.pipeStreamToSocketServer = function() {
 
     this.wsServer = new ws.Server({
       server: this.httpsServer,
-      port: this.wsPort
+      perMessageDeflate: false
     });
   }
-  
   else {
     console.log("ws connection");
     this.wsServer = new ws.Server({
@@ -146,6 +144,10 @@ VideoStream.prototype.pipeStreamToSocketServer = function() {
       }
     }
     return results;
+  }
+
+  if(this.options.cert && this.options.key){
+    this.httpsServer.listen(this.wsPort);
   }
 
   return this.on('camdata', (data) => {
