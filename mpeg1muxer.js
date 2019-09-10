@@ -49,18 +49,6 @@ var Mpeg1Muxer = function(options) {
     ]
   }
 
-  this.spawnOptions = [
-    "-i",
-    this.url,
-    '-f',
-    'mpegts',
-    '-codec:v',
-    'mpeg1video',
-    // additional ffmpeg options go here
-    ...this.additionalFlags,
-    '-'
-  ];
-
   this.stream = child_process.spawn("ffmpeg", this.spawnOptions, {
     detached: false
   });
