@@ -33,6 +33,7 @@ VideoStream.prototype.startMpeg1Stream = function() {
 
   this.mpeg1Muxer = new Mpeg1Muxer({
     ffmpegOptions: this.options.ffmpegOptions,
+    rtspTransport: this.options.rtspTransport,
     url: this.streamUrl
   });
   

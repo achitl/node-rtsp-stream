@@ -8,6 +8,7 @@ var Mpeg1Muxer = function(options) {
   this.url = options.url;
   this.ffmpegOptions = options.ffmpegOptions;
   this.exitCode = undefined;
+  this.rtspTransport = options.rtspTransport;
   this.additionalFlags = [];
 
   if (this.ffmpegOptions) {
@@ -17,6 +18,35 @@ var Mpeg1Muxer = function(options) {
         this.additionalFlags.push(String(this.ffmpegOptions[key]));
       }
     }
+  }
+
+  if(this.rtspTransport){
+    this.spawnOptions = [
+      "-rtsp_transport",
+      this.rtspTransport,
+      "-i",
+      this.url,
+      '-f',
+      'mpegts',
+      '-codec:v',
+      'mpeg1video',
+      // additional ffmpeg options go here
+      ...this.additionalFlags,
+      '-'
+    ]
+  }
+  else {
+    this.spawnOptions = [
+      "-i",
+      this.url,
+      '-f',
+      'mpegts',
+      '-codec:v',
+      'mpeg1video',
+      // additional ffmpeg options go here
+      ...this.additionalFlags,
+      '-'
+    ]
   }
 
   this.spawnOptions = [
