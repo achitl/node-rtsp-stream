@@ -117,13 +117,12 @@ VideoStream.prototype.pipeStreamToSocketServer = function() {
       res.end("hello foobarbackend\n");
     });
 
-    var httpsServer = this.httpsServer
-
     this.wsServer = new ws.Server({
-      httpsServer,
+      server: this.httpsServer,
       port: this.wsPort
     });
   }
+  
   else {
     console.log("ws connection");
     this.wsServer = new ws.Server({
