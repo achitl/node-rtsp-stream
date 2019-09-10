@@ -3,20 +3,14 @@
   "version": "0.0.8",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "prepublish": "npm run test",
-    "test": "mocha test/*.js"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kyriesent/node-rtsp-stream.git"
+    "url": "https://github.com/achitl/node-rtsp-stream"
   },
-  "author": "David Jsa <david@jsa.me>",
-  "license": "MIT",
-  "devDependencies": {
-    "mocha": "^5.2.0"
-  },
+  "author": "Antoine Choquet <achoquet@itlink.fr>",
   "dependencies": {
-    "ws": "^7.0.0"
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "ws": "^7.1.2"
   }
 }
