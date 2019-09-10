@@ -1,5 +1,7 @@
 var ws = require('ws');
+var fs = require('fs');
 var util = require('util');
+var https = require('https');
 var events = require('events');
 var Mpeg1Muxer = require('./mpeg1muxer');
 var STREAM_MAGIC_BYTES = "jsmp"; // Must be 4 bytes
@@ -13,6 +15,7 @@ var VideoStream = function(options) {
   this.wsPort = options.wsPort;
   this.inputStreamStarted = false;
   this.stream = undefined;
+  this.httpsServer = undefined;
   this.startMpeg1Stream();
   this.pipeStreamToSocketServer();
   return this;
@@ -20,13 +23,14 @@ var VideoStream = function(options) {
 
 VideoStream.prototype.stop = function() {
   this.wsServer.close();
+  this.httpsServer.close(()=>{console.log("Https server closed."); this.httpsServer = undefined;});
   this.stream.kill();
   this.inputStreamStarted = false;
   return this;
 }
 
 VideoStream.prototype.startMpeg1Stream = function() {
-  
+
   this.mpeg1Muxer = new Mpeg1Muxer({
     ffmpegOptions: this.options.ffmpegOptions,
     url: this.streamUrl
@@ -97,9 +101,32 @@ VideoStream.prototype.startMpeg1Stream = function() {
 
 VideoStream.prototype.pipeStreamToSocketServer = function() {
   
-  this.wsServer = new ws.Server({
-    port: this.wsPort
-  });
+  if(this.options.cert && this.options.key){
+    console.log("wss connection")
+    this.httpsServer = https.createServer({
+      cert: this.options.cert,
+      key: this.options.key,
+    }, function (req, res) {
+      console.log(new Date() + ' ' +
+      req.connection.remoteAddress + ' ' +
+      req.method + ' ' + req.url);
+      res.writeHead(200);
+      res.end("hello foobarbackend\n");
+    });
+
+    var httpsServer = this.httpsServer
+
+    this.wsServer = new ws.Server({
+      httpsServer,
+      port: this.wsPort
+    });
+  }
+  else {
+    console.log("ws connection");
+    this.wsServer = new ws.Server({
+      port: this.wsPort
+    });
+  }
 
   this.wsServer.on("connection", (socket, request) => {
     return this.onSocketConnect(socket, request);
