@@ -21,6 +21,8 @@ var VideoStream = function(options) {
   return this;
 }
 
+util.inherits(VideoStream, events.EventEmitter);
+
 VideoStream.prototype.stop = function() {
   this.wsServer.close();
   this.httpsServer.close(()=>{console.log("Https server closed."); this.httpsServer = undefined;});
@@ -171,7 +173,5 @@ VideoStream.prototype.onSocketConnect = function(socket, request) {
     return console.log(`${this.name}: Disconnected WebSocket (` + this.wsServer.clients.size + " total)");
   });
 }
-
-util.inherits(VideoStream, events.EventEmitter);
 
 module.exports = VideoStream;
