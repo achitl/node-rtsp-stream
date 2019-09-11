@@ -24,7 +24,7 @@ util.inherits(VideoStream, events.EventEmitter);
 
 VideoStream.prototype.stop = function() {
   this.wsServer.close();
-  this.httpsServer.close(()=>{console.log("Https server closed."); this.httpsServer = undefined;});
+  if(this.httpsServer) this.httpsServer.close(()=>{console.log("Https server closed."); this.httpsServer = undefined;});
   this.stream.kill();
   this.inputStreamStarted = false;
   return this;
